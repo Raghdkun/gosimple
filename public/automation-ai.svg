@@ -1,0 +1,16 @@
+<svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <circle cx="32" cy="24" r="12" stroke="currentColor" stroke-width="2" fill="none"/>
+  <circle cx="28" cy="20" r="2" fill="currentColor"/>
+  <circle cx="36" cy="20" r="2" fill="currentColor"/>
+  <path d="M26 28C26 28 29 30 32 30C35 30 38 28 38 28" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+  <rect x="14" y="42" width="36" height="12" rx="6" stroke="currentColor" stroke-width="2" fill="none"/>
+  <rect x="18" y="46" width="4" height="4" rx="2" fill="currentColor" opacity="0.6"/>
+  <rect x="26" y="46" width="4" height="4" rx="2" fill="currentColor" opacity="0.6"/>
+  <rect x="34" y="46" width="4" height="4" rx="2" fill="currentColor" opacity="0.6"/>
+  <rect x="42" y="46" width="4" height="4" rx="2" fill="currentColor" opacity="0.6"/>
+  <path d="M32 36L32 42" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+  <path d="M8 16L16 20L8 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+  <path d="M56 16L48 20L56 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+  <circle cx="12" cy="48" r="2" fill="currentColor" opacity="0.4"/>
+  <circle cx="52" cy="48" r="2" fill="currentColor" opacity="0.4"/>
+</svg>
