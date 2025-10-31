@@ -64,16 +64,16 @@ export const metadata: Metadata = {
     // yahoo: 'your-yahoo-verification-code',
   },
 };
-
 export default function RootLayout({
   children,
 }: Readonly<{
-  children: React.ReactNode;
+  children: React.ReactNode
 }>) {
   return (
     <html lang="en">
-      <body className={inter.className}>
+      <body className={` font-sans antialiased`}>
+        {children}
       </body>
     </html>
-  );
+  )
 }
