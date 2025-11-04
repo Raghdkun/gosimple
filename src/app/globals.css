@@ -1,4 +1,5 @@
-@import url('https://fonts.googleapis.com/css2?family=Gravitas+One&display=swap');
+/* Google font imports removed to avoid runtime network requests in restricted environments.
+  Use local or system fonts instead. */
 @import "tailwindcss";
 
 @custom-variant dark (&:is(.dark *));
@@ -36,7 +37,7 @@
   --sidebar-accent-foreground: #000000;
   --sidebar-border: #ebebeb;
   --sidebar-ring: #000000;
-  --font-sans: Geist, sans-serif;
+  --font-sans: Geist, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', 'Liberation Sans', sans-serif;
   --font-serif: Georgia, serif;
   --font-mono: Geist Mono, monospace;
   --radius: 0.5rem;
@@ -166,12 +167,22 @@
     @apply border-border outline-ring/50;
   }
 
+  html {
+    scroll-behavior: smooth;
+    scroll-padding-top: 80px; /* Account for fixed header */
+  }
+
   body {
     @apply bg-background text-foreground;
   }
 
   main {
     @apply w-full overflow-x-hidden;
+  }
+
+  /* Add scroll margin to sections for proper anchor linking */
+  section {
+    scroll-margin-top: 80px;
   }
 
   .noisy {
