@@ -8,16 +8,16 @@ export default function HeroSection() {
   const { ref, isInView } = useScrollAnimation({ threshold: 0.1 });
 
   return (
-    <section ref={ref} className="relative pt-24 md:pt-36 lg:pt-44 pb-16 md:pb-24 lg:pb-32 px-4 sm:px-6 md:px-8 lg:px-16 xl:px-32 bg-black text-white overflow-hidden">
+    <section ref={ref} className="relative pt-24 md:pt-36 lg:pt-44 pb-16 md:pb-24 lg:pb-32 px-4 sm:px-6 md:px-8 lg:px-16 xl:px-32 bg-black text-white overflow-hidden flex items-center justify-center min-h-[80vh]">
       <motion.div 
-        className="max-w-7xl mx-auto text-center space-y-8 md:space-y-10 lg:space-y-12"
+        className="max-w-7xl mx-auto text-center space-y-8 md:space-y-10 lg:space-y-12 flex flex-col items-center"
         variants={staggerContainerVariants}
         initial="hidden"
         animate={isInView ? "visible" : "hidden"}
       >
         <motion.h1 
           variants={fadeInUpVariants}
-          className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-[72px] font-bold leading-[1.1] tracking-[-0.02em] font-poppins bg-gradient-to-b from-white via-white to-[#71717A] text-transparent bg-clip-text"
+          className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-[72px] font-bold leading-[1.3] md:leading-[1.35] lg:leading-[1.4] tracking-[-0.02em] font-poppins bg-gradient-to-b from-white via-white to-[#71717A] text-transparent bg-clip-text"
         >
           Simplify Tech. Amplify Growth.
         </motion.h1>
@@ -36,13 +36,23 @@ export default function HeroSection() {
         animate={isInView ? "visible" : "hidden"}
         className="flex justify-center mt-12 md:mt-16 lg:mt-20"
       >
-        <div className="w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 opacity-60 hover:opacity-100 transition-opacity duration-300">
+        <motion.div 
+          className="w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 opacity-60 hover:opacity-100 transition-opacity duration-300"
+          animate={{
+            y: [0, 12, 0],
+          }}
+          transition={{
+            duration: 2,
+            repeat: Infinity,
+            ease: "easeInOut"
+          }}
+        >
           <img 
             src={Images.heroImage}
             alt="Hero illustration"
             className="w-full h-full object-contain"
           />
-        </div>
+        </motion.div>
       </motion.div>
       
       {/* Background decoration - Optimized for all screens note: this background grid placed under the text as bg */}

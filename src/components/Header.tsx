@@ -4,7 +4,7 @@ import { Images } from '@/constants/Images';
 import { useState, useEffect } from 'react';
 import { Menu, X, Github, Mail, BookOpen } from 'lucide-react';
 
-export default function Header() {
+export default function Header({ onNavigate }: { onNavigate?: (href: string) => void }) {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [activeSection, setActiveSection] = useState('');
@@ -82,6 +82,17 @@ export default function Header() {
 
   const handleNavClick = (href: string) => {
     setIsMobileMenuOpen(false);
+    // If a parent provided an onNavigate handler (for cross-route navigation), use it when not on the home page
+    try {
+      const isHome = window.location.pathname === '/';
+      if (onNavigate && !isHome) {
+        onNavigate(href);
+        return;
+      }
+    } catch (e) {
+      // ignore (window not available)
+    }
+
     // Smooth scroll with offset for fixed header
     const element = document.querySelector(href);
     if (element) {
@@ -123,7 +134,7 @@ export default function Header() {
             </div>
 
             {/* Text right next to logo */}
-            <span className="font-bold text-white text-lg md:text-xl lg:text-2xl whitespace-nowrap">
+            <span className="text-white text-lg md:text-xl lg:text-2xl whitespace-nowrap">
               GoSimple
             </span>
           </a>

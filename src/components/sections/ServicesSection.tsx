@@ -5,26 +5,30 @@ import { useState } from 'react';
 import { ArrowRight, Sparkles } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useScrollAnimation, fadeInUpVariants, staggerContainerVariants, scaleInVariants } from '@/hooks/use-scroll-animation';
+import Link from 'next/link';
+import { servicesData } from '@/constants/servicesData';
 
 interface ServiceCardProps {
   icon: React.ReactNode;
   title: string;
   description: string;
   index: number;
+  slug: string;
 }
 
-function ServiceCard({ icon, title, description, index }: ServiceCardProps) {
+function ServiceCard({ icon, title, description, index, slug }: ServiceCardProps) {
   const [isHovered, setIsHovered] = useState(false);
 
   return (
-    <motion.div
-      variants={scaleInVariants}
-      className="group relative border border-[#2a2a2a] rounded-2xl p-6 md:p-8 lg:p-10 bg-gradient-to-br from-[rgba(40,40,40,0.3)] via-[rgba(32,32,32,0.2)] to-[rgba(24,24,24,0.1)] overflow-hidden transition-all duration-500 hover:border-[#3a3a3a] hover:shadow-2xl hover:shadow-black/50 cursor-pointer"
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
-      role="article"
-      aria-label={title}
-    >
+    <Link href={`/services/${slug}`}>
+      <motion.div
+        variants={scaleInVariants}
+        className="group relative h-full border border-[#2a2a2a] rounded-2xl p-6 md:p-8 lg:p-10 bg-gradient-to-br from-[rgba(40,40,40,0.3)] via-[rgba(32,32,32,0.2)] to-[rgba(24,24,24,0.1)] overflow-hidden transition-all duration-500 hover:border-[#3a3a3a] hover:shadow-2xl hover:shadow-black/50 cursor-pointer flex flex-col"
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}
+        role="article"
+        aria-label={title}
+      >
       {/* Gradient Overlay Background */}
       <div
         aria-hidden="true"
@@ -64,12 +68,12 @@ function ServiceCard({ icon, title, description, index }: ServiceCardProps) {
         </h3>
 
         {/* Description */}
-        <p className="text-zinc-400 text-sm md:text-base lg:text-lg leading-relaxed mb-6 group-hover:text-zinc-300 transition-colors">
+        <p className="text-zinc-400 text-sm md:text-base lg:text-lg leading-relaxed mb-6 group-hover:text-zinc-300 transition-colors flex-grow">
           {description}
         </p>
 
         {/* Learn More Link */}
-        <div className="flex items-center gap-2 text-zinc-500 group-hover:text-white transition-all duration-300">
+        <div className="flex items-center gap-2 text-zinc-500 group-hover:text-white transition-all duration-300 mt-auto">
           <span className="text-sm md:text-base font-medium">Learn more</span>
           <ArrowRight
             className={`w-4 h-4 transition-transform duration-300 ${
@@ -85,74 +89,28 @@ function ServiceCard({ icon, title, description, index }: ServiceCardProps) {
         aria-hidden="true"
       />
     </motion.div>
+    </Link>
   );
 }
 
 export default function ServicesSection() {
   const { ref, isInView } = useScrollAnimation({ threshold: 0.1 });
 
-  const services = [
-    {
-      icon: (
-        <div className="relative w-full h-full">
-          <img
-            src={Images.webDevIcon}
-            alt=""
-            className="w-full h-full object-contain"
-            loading="lazy"
-          />
-        </div>
-      ),
-      title: 'Website & App Development',
-      description:
-        'We design and develop high-performing websites and mobile apps that build trust and help you grow your customer base.',
-    },
-    {
-      icon: (
-        <div className="relative w-full h-full">
-          <img
-            src={Images.automationIcon}
-            alt=""
-            className="w-full h-full object-contain"
-            loading="lazy"
-          />
-        </div>
-      ),
-      title: 'Automation & AI Assistants',
-      description:
-        'Simplify your operations with smart automation and AI tools that handle the repetitive tasks, so you and your team can focus on the work that actually grows your business.',
-    },
-    {
-      icon: (
-        <div className="relative w-full h-full">
-          <img
-            src={Images.saasIcon}
-            alt=""
-            className="w-full h-full object-contain"
-            loading="lazy"
-          />
-        </div>
-      ),
-      title: 'SaaS Platform Development',
-      description:
-        'We turn your software idea into a powerful, scalable product, ready for users, growth, and launch.',
-    },
-    {
-      icon: (
-        <div className="relative w-full h-full">
-          <img
-            src={Images.analyticsIcon}
-            alt=""
-            className="w-full h-full object-contain"
-            loading="lazy"
-          />
-        </div>
-      ),
-      title: 'Data Analytics & Insights',
-      description:
-        'We help you choose the right tools, map better workflows, and scale smarter, with clarity and confidence.',
-    },
-  ];
+  const services = servicesData.map(service => ({
+    slug: service.slug,
+    icon: (
+      <div className="relative w-full h-full">
+        <img
+          src={service.icon}
+          alt=""
+          className="w-full h-full object-contain"
+          loading="lazy"
+        />
+      </div>
+    ),
+    title: service.title,
+    description: service.description,
+  }));
 
   return (
     <section
@@ -209,6 +167,7 @@ export default function ServicesSection() {
               title={service.title}
               description={service.description}
               index={index}
+              slug={service.slug}
             />
           ))}
         </motion.div>

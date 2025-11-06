@@ -5,7 +5,7 @@ import { Card, CardHeader, CardContent, CardTitle } from '@/components/ui/card';
 import { useState } from 'react';
 import { ArrowUp, Mail, Phone, Send, Facebook, Twitter, Linkedin, Instagram } from 'lucide-react';
 
-export default function Footer() {
+export default function Footer({ onNavigate }: { onNavigate?: (href: string) => void } = {}) {
   const [email, setEmail] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -21,6 +21,28 @@ export default function Footer() {
 
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const handleFooterNav = (href: string) => {
+    // If parent supplies a navigation handler (used when footer is rendered on other pages), use it.
+    try {
+      const isHome = window.location.pathname === '/';
+      if (onNavigate && !isHome) {
+        onNavigate(href);
+        return;
+      }
+    } catch (e) {
+      // ignore
+    }
+
+    // Default: in-page smooth scroll with offset
+    const el = document.querySelector(href);
+    if (el) {
+      const offset = 100;
+      const elementPosition = el.getBoundingClientRect().top;
+      const offsetPosition = elementPosition + window.pageYOffset - offset;
+      window.scrollTo({ top: offsetPosition, behavior: 'smooth' });
+    }
   };
 
   const services = [
@@ -65,6 +87,10 @@ export default function Footer() {
                 <li key={index}>
                   <a
                     href="#services"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      handleFooterNav('#services');
+                    }}
                     className="group text-zinc-300 text-sm md:text-base hover:text-white transition-all duration-300 flex items-center gap-2"
                   >
                     <span className="w-0 h-px bg-white group-hover:w-4 transition-all duration-300" />
@@ -85,6 +111,10 @@ export default function Footer() {
                 <li key={index}>
                   <a
                     href={`#${item.toLowerCase().replace(/\s+/g, '-')}`}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      handleFooterNav(`#${item.toLowerCase().replace(/\s+/g, '-')}`);
+                    }}
                     className="group text-zinc-300 text-sm md:text-base hover:text-white transition-all duration-300 flex items-center gap-2"
                   >
                     <span className="w-0 h-px bg-white group-hover:w-4 transition-all duration-300" />
@@ -177,6 +207,10 @@ export default function Footer() {
             <div className="flex flex-wrap items-center justify-center gap-6">
               <a
                 href="#privacy"
+                onClick={(e) => {
+                  e.preventDefault();
+                  handleFooterNav('#privacy');
+                }}
                 className="text-zinc-500 hover:text-zinc-300 text-xs sm:text-sm transition-colors"
               >
                 Privacy Policy
@@ -184,6 +218,10 @@ export default function Footer() {
               <span className="text-zinc-700">•</span>
               <a
                 href="#terms"
+                onClick={(e) => {
+                  e.preventDefault();
+                  handleFooterNav('#terms');
+                }}
                 className="text-zinc-500 hover:text-zinc-300 text-xs sm:text-sm transition-colors"
               >
                 Terms of Service
@@ -191,6 +229,10 @@ export default function Footer() {
               <span className="text-zinc-700">•</span>
               <a
                 href="#cookies"
+                onClick={(e) => {
+                  e.preventDefault();
+                  handleFooterNav('#cookies');
+                }}
                 className="text-zinc-500 hover:text-zinc-300 text-xs sm:text-sm transition-colors"
               >
                 Cookie Policy

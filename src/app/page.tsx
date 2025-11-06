@@ -1,5 +1,6 @@
-'use client';
+ 'use client';
 
+import React from 'react';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import HeroSection from '@/components/sections/HeroSection';
@@ -14,6 +15,24 @@ import ContactSection from '@/components/sections/ContactSection';
 import { motion } from 'framer-motion';
 
 export default function Home() {
+  // On-mount, if there's a hash in the URL (e.g. /#services), scroll to it with offset
+  React.useEffect(() => {
+    try {
+      const hash = window.location.hash;
+      if (hash) {
+        const el = document.querySelector(hash);
+        if (el) {
+          const offset = 100;
+          const elementPosition = el.getBoundingClientRect().top;
+          const offsetPosition = elementPosition + window.pageYOffset - offset;
+          window.scrollTo({ top: offsetPosition, behavior: 'smooth' });
+        }
+      }
+    } catch (e) {
+      // ignore
+    }
+  }, []);
+
   return (
     <motion.main 
       className="min-h-screen bg-black text-white overflow-hidden"

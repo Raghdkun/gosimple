@@ -1,14 +1,16 @@
 import { MetadataRoute } from 'next'
 
 export default function robots(): MetadataRoute.Robots {
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://gosimple.com'
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://gosimple.io'
   
   return {
-    rules: {
-      userAgent: '*',
-      allow: '/',
-      disallow: ['/private/', '/admin/'],
-    },
+    rules: [
+      {
+        userAgent: '*',
+        allow: '/',
+        disallow: ['/private/', '/admin/', '/api/'],
+      },
+    ],
     sitemap: `${baseUrl}/sitemap.xml`,
   }
 }
