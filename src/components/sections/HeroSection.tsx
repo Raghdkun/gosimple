@@ -30,7 +30,7 @@ export default function HeroSection() {
       </motion.div>
       
       {/* Hero Image - Centered and responsive note: this is just an arrow assigned to the bottom and it's small and placed after the texts */}
-      <motion.div 
+      {/* <motion.div 
         variants={fadeInUpVariants}
         initial="hidden"
         animate={isInView ? "visible" : "hidden"}
@@ -53,7 +53,7 @@ export default function HeroSection() {
             className="w-full h-full object-contain"
           />
         </motion.div>
-      </motion.div>
+      </motion.div> */}
       
       {/* Background decoration - Optimized for all screens note: this background grid placed under the text as bg */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none opacity-40">

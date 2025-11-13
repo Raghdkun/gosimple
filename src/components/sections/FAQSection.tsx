@@ -25,12 +25,12 @@ const faqs: FAQ[] = [
     answer: "Project timelines vary based on complexity and scope. A basic website might take 4-6 weeks, while a custom SaaS platform could take 3-6 months. We provide detailed timeline estimates during our initial consultation and keep you updated throughout the development process.",
     category: "Process"
   },
-  {
-    id: 3,
-    question: "What is your pricing structure?",
-    answer: "Our pricing is project-based and depends on the scope, complexity, and specific requirements. We offer flexible payment plans and provide detailed quotes after understanding your needs. Typical projects range from $5,000 to $100,000+. We ensure transparent pricing with no hidden costs.",
-    category: "Pricing"
-  },
+  // {
+  //   id: 3,
+  //   question: "What is your pricing structure?",
+  //   answer: "Our pricing is project-based and depends on the scope, complexity, and specific requirements. We offer flexible payment plans and provide detailed quotes after understanding your needs. Typical projects range from $5,000 to $100,000+. We ensure transparent pricing with no hidden costs.",
+  //   category: "Pricing"
+  // },
   {
     id: 4,
     question: "Do you provide ongoing support after launch?",

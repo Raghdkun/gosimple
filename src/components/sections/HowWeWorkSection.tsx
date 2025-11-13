@@ -20,7 +20,6 @@ interface WorkStepProps {
 
 function WorkStep({ number, title, description, iconSrc, index, isLast, deliverables, duration, highlights }: WorkStepProps) {
   const [isHovered, setIsHovered] = useState(false);
-  const [isExpanded, setIsExpanded] = useState(false);
 
   return (
     <motion.div 
@@ -29,48 +28,13 @@ function WorkStep({ number, title, description, iconSrc, index, isLast, delivera
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
-      {/* Connecting Line with Progress (Desktop only) */}
-      {!isLast && (
-        <div className="hidden lg:block absolute top-16 left-[calc(50%+60px)] right-[calc(-50%+60px)] h-1 z-0">
-          <div className="relative w-full h-full">
-            {/* Base line */}
-            <div className="absolute inset-0 bg-zinc-800/30 rounded-full" />
-            
-            {/* Animated gradient line */}
-            <div 
-              className="absolute inset-0 bg-gradient-to-r from-zinc-600 via-zinc-500 to-zinc-600 rounded-full origin-left transition-all duration-1000 ease-out"
-              style={{ 
-                transform: isHovered ? 'scaleX(1)' : 'scaleX(0)',
-              }}
-            />
-            
-            {/* Moving dot animation */}
-            <div 
-              className={`absolute top-1/2 -translate-y-1/2 w-3 h-3 bg-white rounded-full shadow-lg transition-all duration-1000 ${
-                isHovered ? 'left-full opacity-100' : 'left-0 opacity-0'
-              }`}
-            />
-            
-            {/* Arrow at end */}
-            <div className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-2">
-              <div className={`transition-colors duration-500 ${isHovered ? 'text-zinc-400' : 'text-zinc-700'}`}>
-                <ArrowRight className="w-5 h-5" />
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
+    
 
       {/* Step Card - Fixed height structure */}
       <div 
         className={`relative flex flex-col h-full bg-gradient-to-br from-zinc-900/60 via-zinc-900/40 to-zinc-900/20 border rounded-2xl overflow-hidden transition-all duration-500 ${
-          isExpanded 
-            ? 'border-zinc-600 shadow-2xl shadow-zinc-900/50' 
-            : isHovered 
-              ? 'border-zinc-700 shadow-xl shadow-zinc-900/30' 
-              : 'border-zinc-800/50'
-        }`}
-      >
+          isHovered ? 'border-zinc-700 shadow-xl shadow-zinc-900/30' : 'border-zinc-800/50'
+        }`}>
         {/* Top Gradient Accent */}
         <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-zinc-600 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" aria-hidden="true" />
         
@@ -148,25 +112,21 @@ function WorkStep({ number, title, description, iconSrc, index, isLast, delivera
 
           {/* Expandable Section - Grows dynamically */}
           <div className="flex-none">
-            {/* Expandable Deliverables Section */}
+            {/* Deliverables Section - always visible */}
             {deliverables.length > 0 && (
-              <div className={`transition-all duration-500 overflow-hidden ${
-                isExpanded ? 'max-h-96 opacity-100 mt-6' : 'max-h-0 opacity-0'
-              }`}>
-                <div className="pt-4 border-t border-zinc-800/50">
-                  <h4 className="text-sm font-semibold text-zinc-300 mb-3 flex items-center gap-2">
-                    <FileText className="w-4 h-4" />
-                    What You'll Get
-                  </h4>
-                  <ul className="space-y-2">
-                    {deliverables.map((item, idx) => (
-                      <li key={idx} className="flex items-start gap-2 text-xs text-zinc-400">
-                        <span className="text-zinc-600 flex-shrink-0">→</span>
-                        {item}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
+              <div className="pt-4 border-t border-zinc-800/50 mt-6">
+                <h4 className="text-sm font-semibold text-zinc-300 mb-3 flex items-center gap-2">
+                  <FileText className="w-4 h-4" />
+                  What You'll Get
+                </h4>
+                <ul className="space-y-2">
+                  {deliverables.map((item, idx) => (
+                    <li key={idx} className="flex items-start gap-2 text-xs text-zinc-400">
+                      <span className="text-zinc-600 flex-shrink-0">→</span>
+                      {item}
+                    </li>
+                  ))}
+                </ul>
               </div>
             )}
           </div>
@@ -174,19 +134,7 @@ function WorkStep({ number, title, description, iconSrc, index, isLast, delivera
           {/* Button Section - Pushed to bottom with flex-grow spacer */}
           <div className="flex-grow" />
           
-          {/* Expand/Collapse Button */}
-          <div className="flex-none mt-6">
-            <button
-              onClick={() => setIsExpanded(!isExpanded)}
-              className="w-full py-2.5 px-4 bg-zinc-800/30 hover:bg-zinc-800/50 border border-zinc-700/50 hover:border-zinc-600 rounded-lg text-sm font-medium text-zinc-400 hover:text-white transition-all duration-300 flex items-center justify-center gap-2 group"
-              aria-expanded={isExpanded}
-            >
-              <span>{isExpanded ? 'Show Less' : 'View Details'}</span>
-              <ArrowRight className={`w-4 h-4 transition-transform duration-300 ${
-                isExpanded ? 'rotate-90' : 'rotate-0'
-              } group-hover:translate-x-0.5`} />
-            </button>
-          </div>
+          {/* Expand button removed; deliverables are always visible */}
         </div>
 
         {/* Progress indicator on left edge */}
@@ -204,7 +152,7 @@ function WorkStep({ number, title, description, iconSrc, index, isLast, delivera
           <div className="flex flex-col items-center gap-2">
             <div className="w-1 h-8 bg-zinc-800/50 rounded-full" />
             <div className="w-8 h-8 rounded-full bg-zinc-900 border border-zinc-800 flex items-center justify-center">
-              <ArrowRight className="w-4 h-4 text-zinc-600 rotate-90" />
+              <div className="w-2 h-2 rounded-full bg-zinc-600" aria-hidden="true" />
             </div>
             <div className="w-1 h-8 bg-zinc-800/50 rounded-full" />
           </div>
