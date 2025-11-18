@@ -16,6 +16,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
   const service = getServiceBySlug(slug);
   
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://gosimple.io';
+  
   if (!service) {
     return {
       title: 'Service Not Found | GoSimple',
@@ -41,7 +43,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       title: `${service.title} | GoSimple`,
       description: service.description,
       type: 'website',
-      url: `https://gosimple.io/services/${service.slug}`,
+      url: `${baseUrl}/services/${service.slug}`,
       siteName: 'GoSimple',
     },
     twitter: {
@@ -50,7 +52,15 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       description: service.description,
     },
     alternates: {
-      canonical: `https://gosimple.io/services/${service.slug}`,
+      canonical: `/services/${service.slug}`,
+    },
+    robots: {
+      index: true,
+      follow: true,
+      googleBot: {
+        index: true,
+        follow: true,
+      },
     },
   };
 }

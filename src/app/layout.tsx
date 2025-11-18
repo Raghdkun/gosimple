@@ -66,8 +66,31 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode
 }>) {
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'Organization',
+    name: 'Go Simple',
+    description: 'Simplify Tech. Amplify Growth',
+    url: 'https://gosimple.io',
+    logo: 'https://gosimple.io/logo.svg',
+    sameAs: [
+      // Add your social media profiles here
+    ],
+    contactPoint: {
+      '@type': 'ContactPoint',
+      contactType: 'Customer Service',
+      availableLanguage: 'English'
+    }
+  };
+
   return (
     <html lang="en">
+      <head>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        />
+      </head>
       <body className={` font-sans antialiased`}>
         {children}
       </body>
