@@ -113,7 +113,7 @@ function WorkStep({ number, title, description, iconSrc, index, isLast, delivera
           {/* Expandable Section - Grows dynamically */}
           <div className="flex-none">
             {/* Deliverables Section - always visible */}
-            {deliverables.length > 0 && (
+            {/* {deliverables.length > 0 && (
               <div className="pt-4 border-t border-zinc-800/50 mt-6">
                 <h4 className="text-sm font-semibold text-zinc-300 mb-3 flex items-center gap-2">
                   <FileText className="w-4 h-4" />
@@ -128,7 +128,7 @@ function WorkStep({ number, title, description, iconSrc, index, isLast, delivera
                   ))}
                 </ul>
               </div>
-            )}
+            )} */}
           </div>
 
           {/* Button Section - Pushed to bottom with flex-grow spacer */}
@@ -316,7 +316,7 @@ export default function HowWeWorkSection() {
         </div>
 
         {/* Process Features Grid */}
-        <div className="mb-16 md:mb-20 lg:mb-24">
+        {/* <div className="mb-16 md:mb-20 lg:mb-24">
           <div className="text-center mb-10">
             <h3 className="text-2xl md:text-3xl font-bold text-white mb-4">
               Why Our Process Works
@@ -344,7 +344,7 @@ export default function HowWeWorkSection() {
               </div>
             ))}
           </div>
-        </div>
+        </div> */}
 
         {/* CTA Section */}
         <div className="text-center space-y-6">
