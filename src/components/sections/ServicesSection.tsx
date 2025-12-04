@@ -31,8 +31,8 @@ function ServiceCard({ icon, title, description, index, slug }: ServiceCardProps
         {/* Hover Gradient Overlay */}
         <div className="absolute inset-0 bg-gradient-to-b from-zinc-900/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
         
-        {/* Content - Wrapped in a div that we will animate */}
-        <div className="relative z-10 flex flex-col items-center justify-center w-full h-full space-y-8 card-content">
+        {/* Content */}
+        <div className="relative z-10 flex flex-col items-center justify-center w-full h-full space-y-8">
           {/* Icon Container */}
           <div className="relative">
             <div className="w-16 h-16 md:w-20 md:h-20 lg:w-24 lg:h-24 transition-transform duration-500 group-hover:scale-110 group-hover:-translate-y-1">
@@ -88,21 +88,10 @@ export default function ServicesSection() {
       const cardSlot3 = containerRef.current.querySelector('.card-slot-3');
       const cardSlot4 = containerRef.current.querySelector('.card-slot-4');
       
-      // Get the content wrappers inside the cards
-      const content1 = cardSlot1?.querySelector('.card-content');
-      const content2 = cardSlot2?.querySelector('.card-content');
-      const content3 = cardSlot3?.querySelector('.card-content');
-      const content4 = cardSlot4?.querySelector('.card-content');
-
-      // Initial states - Slots are visible, but content is hidden/scaled
+      // Initial states
       gsap.set(headerRef.current, { opacity: 0, y: 30 });
-      
-      // Ensure slots are visible so layout holds
-      gsap.set([cardSlot1, cardSlot2, cardSlot3, cardSlot4], { opacity: 1, zIndex: 1 });
-      
-      // Set initial state for content
-      gsap.set([content1, content2], { opacity: 0, scale: 0.8 });
-      gsap.set([content3, content4], { opacity: 0, scale: 0.8 });
+      gsap.set([cardSlot1, cardSlot2], { opacity: 0, scale: 0.8, y: 50 });
+      gsap.set([cardSlot3, cardSlot4], { opacity: 0, scale: 0.8, y: 50 });
 
       const tl = gsap.timeline({
         scrollTrigger: {
@@ -122,31 +111,32 @@ export default function ServicesSection() {
         ease: "power2.out"
       });
 
-      // 2. Show First Pair Content
-      tl.to([content1, content2], {
+      // 2. Show First Pair
+      tl.to([cardSlot1, cardSlot2], {
         opacity: 1,
         scale: 1,
+        y: 0,
         duration: 2.5,
         stagger: 0.3,
         ease: "back.out(1.2)"
       });
 
-      // Hold first pair briefly
+      // Hold first pair
       tl.to({}, { duration: 2 });
 
-      // 3. Swap Pairs Content
-      // Fade out first pair content
-      tl.to([content1, content2], {
+      // 3. Swap Pairs
+      tl.to([cardSlot1, cardSlot2], {
         opacity: 0,
         scale: 0.9,
+        y: -50,
         duration: 2.5,
         ease: "power2.in"
       }, "swap");
 
-      // Fade in second pair content
-      tl.to([content3, content4], {
+      tl.to([cardSlot3, cardSlot4], {
         opacity: 1,
         scale: 1,
+        y: 0,
         duration: 2.5,
         stagger: 0.3,
         ease: "back.out(1.2)"
