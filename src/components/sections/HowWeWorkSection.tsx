@@ -1,169 +1,100 @@
 'use client';
 
 import { Images } from '@/constants/Images';
-import { useState } from 'react';
-import { ArrowRight, CheckCircle2, Sparkles, Clock, Users, Rocket, MessageCircle, FileText, Zap } from 'lucide-react';
-import { motion } from 'framer-motion';
-import { useScrollAnimation, fadeInUpVariants, staggerContainerVariants, scaleInVariants } from '@/hooks/use-scroll-animation';
+import { useRef } from 'react';
+import { ArrowRight, CheckCircle2, Sparkles, Clock } from 'lucide-react';
+import { useGSAP } from '@gsap/react';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+
+gsap.registerPlugin(ScrollTrigger);
 
 interface WorkStepProps {
   number: string;
   title: string;
   description: string;
   iconSrc?: string;
-  index: number;
-  isLast?: boolean;
-  deliverables: string[];
   duration: string;
   highlights: string[];
 }
 
-function WorkStep({ number, title, description, iconSrc, index, isLast, deliverables, duration, highlights }: WorkStepProps) {
-  const [isHovered, setIsHovered] = useState(false);
-
+function WorkStep({ number, title, description, iconSrc, duration, highlights }: WorkStepProps) {
   return (
-    <motion.div 
-      variants={scaleInVariants}
-      className="relative flex flex-col h-full"
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
+    <div
+      className="work-card group relative flex-shrink-0 w-full h-auto min-h-[320px] sm:min-h-[340px] md:min-h-[360px] border border-zinc-800 rounded-2xl sm:rounded-3xl p-4 sm:p-5 md:p-6 bg-black/60 backdrop-blur-xl overflow-hidden transition-all duration-500 hover:border-zinc-600"
+      role="article"
+      aria-label={title}
     >
-    
-
-      {/* Step Card - Fixed height structure */}
-      <div 
-        className={`relative flex flex-col h-full bg-gradient-to-br from-zinc-900/60 via-zinc-900/40 to-zinc-900/20 border rounded-2xl overflow-hidden transition-all duration-500 ${
-          isHovered ? 'border-zinc-700 shadow-xl shadow-zinc-900/30' : 'border-zinc-800/50'
-        }`}>
-        {/* Top Gradient Accent */}
-        <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-zinc-600 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" aria-hidden="true" />
-        
-        {/* Card Content - Flex column to push button to bottom */}
-        <div className="flex flex-col h-full p-6 md:p-8">
-          {/* Top Section - Fixed content */}
-          <div className="flex-none space-y-6">
-            {/* Header Section */}
-            <div className="flex items-start gap-4 md:gap-6">
-              {/* Icon Container */}
-              <div className="relative flex-shrink-0">
-                {/* Outer glow ring */}
-                <div 
-                  className={`absolute inset-0 bg-gradient-to-br from-zinc-600/40 via-zinc-500/30 to-zinc-600/40 rounded-2xl blur-xl transition-all duration-500 ${
-                    isHovered ? 'opacity-100 scale-110' : 'opacity-0 scale-100'
-                  }`}
-                  aria-hidden="true"
-                />
-                
-                {/* Icon circle */}
-                <div className={`relative w-16 h-16 md:w-20 md:h-20 rounded-2xl bg-gradient-to-br from-zinc-800 to-zinc-900 border-2 flex items-center justify-center transition-all duration-500 ${
-                  isHovered ? 'border-zinc-600 scale-105 rotate-3' : 'border-zinc-700/50 scale-100 rotate-0'
-                }`}>
-                  <div className="w-10 h-10 md:w-12 md:h-12">
-                    {iconSrc && (
-                      <img
-                        alt=""
-                        className="w-full h-full object-contain"
-                        src={iconSrc}
-                        loading="lazy"
-                      />
-                    )}
-                  </div>
-                  
-                  {/* Step number overlay */}
-                  <div className="absolute -bottom-2 -right-2 w-8 h-8 rounded-full bg-gradient-to-br from-white to-zinc-300 border-2 border-zinc-900 flex items-center justify-center shadow-lg">
-                    <span className="text-xs font-bold text-black">{number}</span>
-                  </div>
-                </div>
-              </div>
-
-              {/* Title and Duration */}
-              <div className="flex-1 min-w-0">
-                <h3 className={`text-xl md:text-2xl font-bold text-white mb-2 leading-tight transition-colors ${
-                  isHovered ? 'text-zinc-100' : 'text-white'
-                }`}>
-                  {title}
-                </h3>
-                
-                {/* Duration badge */}
-                <div className="inline-flex items-center gap-2 px-3 py-1 bg-zinc-800/50 border border-zinc-700/50 rounded-full">
-                  <Clock className="w-3 h-3 text-zinc-400" />
-                  <span className="text-xs text-zinc-400 font-medium">{duration}</span>
-                </div>
-              </div>
-            </div>
-
-            {/* Description */}
-            <p className="text-sm md:text-base text-zinc-400 leading-relaxed">
-              {description}
-            </p>
-
-            {/* Key Highlights - Always visible, fixed height */}
-            <div className="space-y-2 min-h-[84px]">
-              {highlights.map((highlight, idx) => (
-                <div key={idx} className="flex items-start gap-3 group/item">
-                  <CheckCircle2 className="w-4 h-4 text-zinc-600 group-hover/item:text-zinc-400 flex-shrink-0 mt-0.5 transition-colors" />
-                  <span className="text-xs md:text-sm text-zinc-500 group-hover/item:text-zinc-300 transition-colors">
-                    {highlight}
-                  </span>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Expandable Section - Grows dynamically */}
-          <div className="flex-none">
-            {/* Deliverables Section - always visible */}
-            {/* {deliverables.length > 0 && (
-              <div className="pt-4 border-t border-zinc-800/50 mt-6">
-                <h4 className="text-sm font-semibold text-zinc-300 mb-3 flex items-center gap-2">
-                  <FileText className="w-4 h-4" />
-                  What You'll Get
-                </h4>
-                <ul className="space-y-2">
-                  {deliverables.map((item, idx) => (
-                    <li key={idx} className="flex items-start gap-2 text-xs text-zinc-400">
-                      <span className="text-zinc-600 flex-shrink-0">→</span>
-                      {item}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            )} */}
-          </div>
-
-          {/* Button Section - Pushed to bottom with flex-grow spacer */}
-          <div className="flex-grow" />
-          
-          {/* Expand button removed; deliverables are always visible */}
-        </div>
-
-        {/* Progress indicator on left edge */}
-        <div 
-          className={`absolute left-0 top-0 w-1 bg-gradient-to-b from-zinc-600 via-zinc-500 to-zinc-600 transition-all duration-500 ${
-            isHovered ? 'h-full opacity-100' : 'h-0 opacity-0'
-          }`}
-          aria-hidden="true"
-        />
+      {/* Number Badge */}
+      <div className="absolute top-4 right-4 sm:top-5 sm:right-5 w-10 h-10 sm:w-12 sm:h-12 rounded-full border border-zinc-700 flex items-center justify-center bg-black/50">
+        <span className="text-sm sm:text-base font-bold text-white">{number}</span>
       </div>
 
-      {/* Mobile Connector */}
-      {!isLast && (
-        <div className="lg:hidden my-6 flex justify-center">
-          <div className="flex flex-col items-center gap-2">
-            <div className="w-1 h-8 bg-zinc-800/50 rounded-full" />
-            <div className="w-8 h-8 rounded-full bg-zinc-900 border border-zinc-800 flex items-center justify-center">
-              <div className="w-2 h-2 rounded-full bg-zinc-600" aria-hidden="true" />
-            </div>
-            <div className="w-1 h-8 bg-zinc-800/50 rounded-full" />
+      {/* Gradient Overlay */}
+      <div className="absolute inset-0 bg-gradient-to-t from-zinc-900/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
+      
+      {/* Content */}
+      <div className="relative z-10 flex flex-col h-full">
+        {/* Icon */}
+        <div className="relative mb-4 sm:mb-5">
+          <div className="w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 transition-transform duration-500 group-hover:scale-110">
+            {iconSrc && (
+              <img
+                src={iconSrc}
+                alt=""
+                className="w-full h-full object-contain"
+                loading="lazy"
+              />
+            )}
           </div>
+          {/* Icon Glow */}
+          <div className="absolute inset-0 bg-white/20 blur-3xl rounded-full opacity-0 group-hover:opacity-50 transition-opacity duration-500" />
         </div>
-      )}
-    </motion.div>
+
+        {/* Duration Badge */}
+        <div className="inline-flex items-center gap-1.5 px-2.5 py-1 border border-zinc-700/50 rounded-full mb-3 w-fit">
+          <Clock className="w-3 h-3 text-zinc-400" />
+          <span className="text-[10px] sm:text-xs text-zinc-400 font-medium">{duration}</span>
+        </div>
+
+        {/* Title */}
+        <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-white mb-2 sm:mb-3 group-hover:text-zinc-100 transition-colors">
+          {title}
+        </h3>
+
+        {/* Description */}
+        <p className="text-zinc-400 text-xs sm:text-sm leading-relaxed group-hover:text-zinc-300 transition-colors mb-4">
+          {description}
+        </p>
+
+        {/* Highlights */}
+        <div className="space-y-2 flex-grow">
+          {highlights.map((highlight, idx) => (
+            <div key={idx} className="flex items-start gap-2">
+              <CheckCircle2 className="w-3.5 h-3.5 text-zinc-600 group-hover:text-zinc-400 flex-shrink-0 mt-0.5 transition-colors" />
+              <span className="text-[10px] sm:text-xs text-zinc-500 group-hover:text-zinc-400 transition-colors">
+                {highlight}
+              </span>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Animated Border Gradient on Hover */}
+      <div className="absolute inset-0 rounded-2xl sm:rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
+        style={{
+          background: 'linear-gradient(135deg, rgba(255,255,255,0.1) 0%, transparent 50%, rgba(255,255,255,0.05) 100%)'
+        }}
+      />
+    </div>
   );
 }
 
 export default function HowWeWorkSection() {
-  const { ref, isInView } = useScrollAnimation({ threshold: 0.1 });
+  const sectionRef = useRef<HTMLElement>(null);
+  const headerRef = useRef<HTMLDivElement>(null);
+  const cardsContainerRef = useRef<HTMLDivElement>(null);
+  const ctaRef = useRef<HTMLDivElement>(null);
 
   const steps = [
     {
@@ -177,12 +108,6 @@ export default function HowWeWorkSection() {
         'In-depth needs assessment',
         'Goal alignment workshop',
       ],
-      deliverables: [
-        'Project requirements document',
-        'Initial feasibility analysis',
-        'Stakeholder interview notes',
-        'Technical constraints overview',
-      ],
     },
     {
       number: '02',
@@ -194,13 +119,6 @@ export default function HowWeWorkSection() {
         'Detailed project timeline',
         'Resource allocation plan',
         'Risk assessment & mitigation',
-      ],
-      deliverables: [
-        'Comprehensive project proposal',
-        'Wireframes and mockups',
-        'Technical architecture diagram',
-        'Cost breakdown and timeline',
-        'Milestone schedule',
       ],
     },
     {
@@ -214,171 +132,159 @@ export default function HowWeWorkSection() {
         'Regular progress updates',
         'Quality assurance testing',
       ],
-      deliverables: [
-        'Fully functional product',
-        'Source code and documentation',
-        'User training materials',
-        'Post-launch support plan',
-        'Performance optimization report',
-      ],
     },
   ];
 
-  const processFeatures = [
-    {
-      icon: MessageCircle,
-      title: 'Clear Communication',
-      description: 'Regular updates and transparent dialogue throughout the project',
-    },
-    {
-      icon: Zap,
-      title: 'Agile & Flexible',
-      description: 'Adapt to changing requirements without derailing timelines',
-    },
-    {
-      icon: Users,
-      title: 'Collaborative Approach',
-      description: 'Your input shapes the solution at every milestone',
-    },
-    {
-      icon: Rocket,
-      title: 'On-Time Delivery',
-      description: 'Committed to meeting deadlines without compromising quality',
-    },
-  ];
+  // GSAP scroll-triggered animations
+  useGSAP(() => {
+    if (!sectionRef.current) return;
+
+    const cards = gsap.utils.toArray<HTMLElement>('.work-card');
+
+    // Initial states
+    gsap.set(headerRef.current, { opacity: 0, y: 50 });
+    gsap.set(cards, { opacity: 0, y: 60, scale: 0.95 });
+    gsap.set(ctaRef.current, { opacity: 0, y: 40 });
+
+    // Header animation
+    gsap.to(headerRef.current, {
+      opacity: 1,
+      y: 0,
+      duration: 0.8,
+      ease: "power3.out",
+      scrollTrigger: {
+        trigger: sectionRef.current,
+        start: "top 80%",
+        toggleActions: "play none none reverse"
+      }
+    });
+
+    // Cards stagger animation - each card animates as it comes into view
+    cards.forEach((card, index) => {
+      gsap.to(card, {
+        opacity: 1,
+        y: 0,
+        scale: 1,
+        duration: 0.7,
+        delay: index * 0.15,
+        ease: "power3.out",
+        scrollTrigger: {
+          trigger: cardsContainerRef.current,
+          start: "top 75%",
+          toggleActions: "play none none reverse"
+        }
+      });
+    });
+
+    // CTA animation
+    gsap.to(ctaRef.current, {
+      opacity: 1,
+      y: 0,
+      duration: 0.6,
+      ease: "power2.out",
+      scrollTrigger: {
+        trigger: ctaRef.current,
+        start: "top 90%",
+        toggleActions: "play none none reverse"
+      }
+    });
+
+    return () => {
+      ScrollTrigger.getAll().forEach(st => st.kill());
+    };
+  }, { scope: sectionRef });
 
   return (
     <section
-      ref={ref}
+      ref={sectionRef}
       id="process"
-      className="relative py-16 md:py-20 lg:py-28 px-4 sm:px-6 md:px-12 lg:px-20 overflow-hidden"
+      className="relative py-12 sm:py-16 md:py-20 lg:py-24 px-4 sm:px-6 md:px-8 lg:px-12 overflow-hidden bg-black"
       aria-labelledby="process-heading"
     >
-      {/* Background Elements */}
-      <div className="absolute inset-0 bg-gradient-to-b from-black via-zinc-950 to-black" aria-hidden="true" />
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-zinc-900/20 via-transparent to-transparent" aria-hidden="true" />
+      {/* Subtle Background Pattern */}
+      <div className="absolute inset-0 opacity-[0.02]">
+        <div className="absolute inset-0" style={{
+          backgroundImage: 'radial-gradient(circle, rgba(255,255,255,0.3) 1px, transparent 1px)',
+          backgroundSize: '40px 40px'
+        }} />
+      </div>
 
       <div className="relative max-w-7xl mx-auto">
         {/* Section Header */}
-        <motion.div 
-          className="text-center mb-12 md:mb-16 lg:mb-20 space-y-6"
-          initial="hidden"
-          animate={isInView ? "visible" : "hidden"}
-          variants={staggerContainerVariants}
+        <div 
+          ref={headerRef}
+          className="text-center mb-10 sm:mb-12 md:mb-16"
         >
-          <motion.div variants={fadeInUpVariants} className="inline-flex items-center gap-2 px-4 py-2 bg-zinc-900/50 border border-zinc-800 rounded-full backdrop-blur-sm">
-            <Sparkles className="w-4 h-4 text-zinc-400" />
-            <span className="text-sm text-zinc-400 font-medium uppercase tracking-wide">
+          <div className="inline-flex items-center gap-2 px-3 py-1.5 border border-zinc-800 rounded-full mb-3 sm:mb-4">
+            <Sparkles className="w-3.5 h-3.5 text-zinc-500" />
+            <span className="text-[10px] sm:text-xs font-medium text-zinc-400 uppercase tracking-wide">
               Our Process
             </span>
-          </motion.div>
+          </div>
 
-          <motion.h2
-            variants={fadeInUpVariants}
+          <h2
             id="process-heading"
-            className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold bg-gradient-to-r from-white via-zinc-200 to-zinc-500 bg-clip-text text-transparent leading-tight tracking-tight"
+            className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold bg-gradient-to-r from-white via-zinc-200 to-zinc-500 bg-clip-text text-transparent mb-3 sm:mb-4 tracking-tight leading-tight"
           >
             How We Work
-          </motion.h2>
+          </h2>
 
-          <motion.p variants={fadeInUpVariants} className="text-zinc-400 text-base sm:text-lg md:text-xl lg:text-2xl max-w-3xl mx-auto leading-relaxed">
+          <p className="text-zinc-400 text-xs sm:text-sm md:text-base max-w-2xl mx-auto leading-relaxed">
             A proven 3-step process that transforms your ideas into reality with transparency and precision
-          </motion.p>
+          </p>
 
-          <motion.div variants={fadeInUpVariants} className="flex justify-center pt-4">
-            <div className="w-32 h-0.5 bg-gradient-to-r from-transparent via-zinc-600 to-transparent" />
-          </motion.div>
-        </motion.div>
-
-        {/* Work Steps Grid - Items stretch to equal height */}
-        <div className="mb-16 md:mb-20 lg:mb-24">
-          <motion.div 
-            className="grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-6 lg:items-stretch"
-            initial="hidden"
-            animate={isInView ? "visible" : "hidden"}
-            variants={staggerContainerVariants}
-          >
-            {steps.map((step, index) => (
-              <WorkStep
-                key={index}
-                number={step.number}
-                title={step.title}
-                description={step.description}
-                iconSrc={step.iconSrc}
-                duration={step.duration}
-                highlights={step.highlights}
-                deliverables={step.deliverables}
-                index={index}
-                isLast={index === steps.length - 1}
-              />
-            ))}
-          </motion.div>
+          {/* Progress Line */}
+          <div className="flex justify-center pt-6 sm:pt-8">
+            <div className="w-24 sm:w-32 h-0.5 bg-gradient-to-r from-transparent via-zinc-600 to-transparent" />
+          </div>
         </div>
 
-        {/* Process Features Grid */}
-        {/* <div className="mb-16 md:mb-20 lg:mb-24">
-          <div className="text-center mb-10">
-            <h3 className="text-2xl md:text-3xl font-bold text-white mb-4">
-              Why Our Process Works
-            </h3>
-            <p className="text-zinc-400 text-base max-w-2xl mx-auto">
-              Built on years of experience and refined through tens of successful projects
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
-            {processFeatures.map((feature, index) => (
-              <div
-                key={index}
-                className="group p-6 bg-zinc-900/30 border border-zinc-800/50 rounded-xl hover:bg-zinc-900/50 hover:border-zinc-700 transition-all duration-300"
-              >
-                <div className="w-12 h-12 rounded-lg bg-zinc-800/50 border border-zinc-700 flex items-center justify-center mb-4 group-hover:bg-zinc-800 group-hover:border-zinc-600 group-hover:scale-110 transition-all duration-300">
-                  <feature.icon className="w-6 h-6 text-zinc-500 group-hover:text-zinc-300 transition-colors" />
-                </div>
-                <h4 className="text-base md:text-lg font-semibold text-white mb-2 group-hover:text-zinc-100 transition-colors">
-                  {feature.title}
-                </h4>
-                <p className="text-sm text-zinc-400 leading-relaxed group-hover:text-zinc-300 transition-colors">
-                  {feature.description}
-                </p>
-              </div>
-            ))}
-          </div>
-        </div> */}
+        {/* Cards Grid */}
+        <div 
+          ref={cardsContainerRef}
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 md:gap-8 justify-items-center mb-12 sm:mb-16"
+        >
+          {steps.map((step, index) => (
+            <WorkStep
+              key={index}
+              number={step.number}
+              title={step.title}
+              description={step.description}
+              iconSrc={step.iconSrc}
+              duration={step.duration}
+              highlights={step.highlights}
+            />
+          ))}
+        </div>
 
         {/* CTA Section */}
-        <div className="text-center space-y-6">
-          <div className="max-w-2xl mx-auto space-y-4">
-            <p className="text-zinc-400 text-base md:text-lg">
-              Ready to start your project? Let's discuss how we can help bring your vision to life.
-            </p>
-            <p className="text-sm text-zinc-500">
-              Book a free consultation call to explore how our process can work for you
+        <div ref={ctaRef} className="text-center space-y-4 sm:space-y-6">
+          <div className="max-w-xl mx-auto space-y-2 sm:space-y-3">
+            <p className="text-zinc-400 text-xs sm:text-sm md:text-base">
+              Ready to start your project? Let&apos;s discuss how we can help bring your vision to life.
             </p>
           </div>
           
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4">
             <a
               href="#contact"
-              className="group relative px-8 py-4 bg-white text-black rounded-full font-semibold text-base md:text-lg transition-all duration-300 hover:shadow-2xl hover:shadow-white/20 hover:scale-105 overflow-hidden"
+              className="group relative px-6 sm:px-8 py-3 sm:py-3.5 bg-white text-black rounded-full font-semibold text-sm sm:text-base transition-all duration-300 hover:shadow-xl hover:shadow-white/10 hover:scale-105 overflow-hidden"
             >
               <span className="absolute inset-0 bg-gradient-to-r from-transparent via-zinc-200 to-transparent translate-x-[-200%] group-hover:translate-x-[200%] transition-transform duration-1000" aria-hidden="true" />
               
               <span className="relative flex items-center gap-2">
                 Start Your Project
-                <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
               </span>
             </a>
 
             <a
               href="#work"
-              className="px-8 py-4 bg-transparent border-2 border-zinc-700 hover:border-zinc-600 text-white rounded-full font-semibold text-base md:text-lg transition-all duration-300 hover:bg-zinc-900/30"
+              className="px-6 sm:px-8 py-3 sm:py-3.5 bg-transparent border border-zinc-700 hover:border-zinc-500 text-white rounded-full font-semibold text-sm sm:text-base transition-all duration-300 hover:bg-zinc-900/30"
             >
               View Case Studies
             </a>
           </div>
-
-        
         </div>
       </div>
     </section>

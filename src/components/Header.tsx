@@ -1,19 +1,115 @@
 'use client';
 
 import { Images } from '@/constants/Images';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Menu, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { useGSAP } from '@gsap/react';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
-export default function Header({ onNavigate }: { onNavigate?: (href: string) => void }) {
-  const [isScrolled, setIsScrolled] = useState(false);
+gsap.registerPlugin(ScrollTrigger);
+
+interface HeaderProps {
+  onNavigate?: (href: string) => void;
+  isVisible?: boolean;
+}
+
+export default function Header({ onNavigate, isVisible = true }: HeaderProps) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [activeSection, setActiveSection] = useState('');
-  const [scrollProgress, setScrollProgress] = useState(0);
+  const headerRef = useRef<HTMLElement>(null);
+  const headerInnerRef = useRef<HTMLDivElement>(null);
+  const lastScrollY = useRef(0);
+  const isHidden = useRef(!isVisible);
+  const hasAnimatedIn = useRef(false);
+
+  // Animate header in when isVisible becomes true
+  useEffect(() => {
+    if (!headerInnerRef.current) return;
+    
+    if (isVisible && !hasAnimatedIn.current) {
+      // Initial hidden state
+      gsap.set(headerInnerRef.current, { y: -100, opacity: 0 });
+      
+      // Animate in with delay
+      gsap.to(headerInnerRef.current, {
+        y: 0,
+        opacity: 1,
+        duration: 0.8,
+        delay: 0.3,
+        ease: "power3.out",
+        onComplete: () => {
+          hasAnimatedIn.current = true;
+          isHidden.current = false;
+        }
+      });
+    } else if (!isVisible) {
+      gsap.set(headerInnerRef.current, { y: -100, opacity: 0 });
+    }
+  }, [isVisible]);
+
+  // GSAP-powered header hide/show on scroll
+  useGSAP(() => {
+    if (!headerRef.current || !headerInnerRef.current || !isVisible) return;
+
+    // Create scroll-based show/hide
+    ScrollTrigger.create({
+      start: 'top top',
+      end: 'max',
+      onUpdate: (self) => {
+        if (!hasAnimatedIn.current) return; // Don't run until initial animation is done
+        
+        const scrollY = window.scrollY;
+        const direction = self.direction; // 1 = down, -1 = up
+        
+        // Only apply after scrolling past 100px
+        if (scrollY < 100) {
+          if (isHidden.current) {
+            gsap.to(headerInnerRef.current, {
+              y: 0,
+              opacity: 1,
+              duration: 0.4,
+              ease: "power3.out"
+            });
+            isHidden.current = false;
+          }
+          lastScrollY.current = scrollY;
+          return;
+        }
+
+        // Scroll down - hide header
+        if (direction === 1 && !isHidden.current && scrollY > lastScrollY.current + 10) {
+          gsap.to(headerInnerRef.current, {
+            y: -100,
+            opacity: 0,
+            duration: 0.4,
+            ease: "power3.in"
+          });
+          isHidden.current = true;
+        }
+        // Scroll up - show header
+        else if (direction === -1 && isHidden.current) {
+          gsap.to(headerInnerRef.current, {
+            y: 0,
+            opacity: 1,
+            duration: 0.4,
+            ease: "power3.out"
+          });
+          isHidden.current = false;
+        }
+
+        lastScrollY.current = scrollY;
+      }
+    });
+
+    return () => {
+      ScrollTrigger.getAll().forEach(st => st.kill());
+    };
+  }, { scope: headerRef, dependencies: [isVisible] });
 
   useEffect(() => {
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 20);
       const sections = ['services', 'work', 'process', 'faq', 'team'];
       const current = sections.find(section => {
         const element = document.getElementById(section);
@@ -24,24 +120,11 @@ export default function Header({ onNavigate }: { onNavigate?: (href: string) => 
         return false;
       });
       setActiveSection(current || '');
-      const total = document.documentElement.scrollHeight - window.innerHeight;
-      const progress = total > 0 ? (window.scrollY / total) * 100 : 0;
-      setScrollProgress(Math.max(0, Math.min(100, progress)));
     };
 
     window.addEventListener('scroll', handleScroll);
     handleScroll();
     return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
-
-  useEffect(() => {
-    const handleResize = () => {
-      const total = document.documentElement.scrollHeight - window.innerHeight;
-      const progress = total > 0 ? (window.scrollY / total) * 100 : 0;
-      setScrollProgress(Math.max(0, Math.min(100, progress)));
-    };
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
   }, []);
 
   useEffect(() => {
@@ -92,10 +175,10 @@ export default function Header({ onNavigate }: { onNavigate?: (href: string) => 
 
   return (
     <>
-      <header className="fixed top-0 left-0 right-0 z-50 h-[72px]" role="banner">
-        <div className="px-2 sm:px-4 md:px-8 max-w-[1920px] mx-auto">
+      <header ref={headerRef} className="fixed top-0 left-0 right-0 z-50 h-[72px]" role="banner">
+        <div ref={headerInnerRef} className="px-2 sm:px-4 md:px-8 max-w-[1920px] mx-auto">
           <div
-            className={`mt-2 h-[70px] relative flex items-center justify-between bg-black/95 border border-zinc-700 rounded-full px-3 sm:px-6 md:px-8 max-w-[1100px] mx-auto`}
+            className={`mt-2 h-[70px] relative flex items-center justify-between bg-black/95 border border-zinc-700 rounded-full px-3 sm:px-6 md:px-8 max-w-[1100px] mx-auto backdrop-blur-xl`}
           >
             <a
               href="#"
@@ -212,10 +295,6 @@ export default function Header({ onNavigate }: { onNavigate?: (href: string) => 
             </Button>
           </div>
         </nav>
-      </div>
-
-      <div className="fixed top-[72px] left-0 right-0 h-0 bg-transparent z-40">
-        <div className="h-0" style={{ width: `${scrollProgress}%` }} />
       </div>
     </>
   );

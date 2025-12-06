@@ -167,13 +167,36 @@
     @apply border-border outline-ring/50;
   }
 
+  /* Hide scrollbar globally while keeping scroll functionality */
   html {
     scroll-behavior: smooth;
     scroll-padding-top: 80px; /* Account for fixed header */
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE and Edge */
+  }
+
+  html::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, Opera */
   }
 
   body {
     @apply bg-background text-foreground;
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE and Edge */
+  }
+
+  body::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, Opera */
+  }
+
+  /* Also hide scrollbar on any scrollable element */
+  *::-webkit-scrollbar {
+    display: none;
+  }
+
+  * {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
   }
 
   main {

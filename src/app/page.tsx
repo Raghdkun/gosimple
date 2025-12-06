@@ -1,8 +1,9 @@
  'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
+import IntroSection from '@/components/sections/IntroSection';
 import HeroSection from '@/components/sections/HeroSection';
 import ServicesSection from '@/components/sections/ServicesSection';
 import StatsSection from '@/components/sections/StatsSection';
@@ -15,42 +16,59 @@ import ContactSection from '@/components/sections/ContactSection';
 import { motion } from 'framer-motion';
 
 export default function Home() {
-  // On-mount, if there's a hash in the URL (e.g. /#services), scroll to it with offset
+  const [showIntro, setShowIntro] = useState(true);
+
+  // On-mount, if there's a hash in the URL (e.g. /#services), skip intro and scroll to it
   React.useEffect(() => {
     try {
       const hash = window.location.hash;
       if (hash) {
-        const el = document.querySelector(hash);
-        if (el) {
-          const offset = 100;
-          const elementPosition = el.getBoundingClientRect().top;
-          const offsetPosition = elementPosition + window.pageYOffset - offset;
-          window.scrollTo({ top: offsetPosition, behavior: 'smooth' });
-        }
+        setShowIntro(false);
+        setTimeout(() => {
+          const el = document.querySelector(hash);
+          if (el) {
+            const offset = 100;
+            const elementPosition = el.getBoundingClientRect().top;
+            const offsetPosition = elementPosition + window.pageYOffset - offset;
+            window.scrollTo({ top: offsetPosition, behavior: 'smooth' });
+          }
+        }, 100);
       }
     } catch (e) {
       // ignore
     }
   }, []);
 
+  const handleIntroComplete = () => {
+    setShowIntro(false);
+  };
+
   return (
-    <motion.main 
-      className="min-h-screen bg-black text-white overflow-hidden"
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{ duration: 0.5 }}
-    >
-      {/* <Header /> */}
-      <HeroSection />
-      <ServicesSection />
-      {/* <StatsSection /> */}
-      <WorkSection />
-      <HowWeWorkSection />
-      {/* <TestimonialsSection /> */}
-      <FAQSection />
-      {/* <BlogPreview /> */}
-      <ContactSection />
-      <Footer />
-    </motion.main>
+    <>
+      {/* Intro Section - Fixed overlay */}
+      {showIntro && (
+        <IntroSection onComplete={handleIntroComplete} />
+      )}
+
+      {/* Main Content */}
+      <motion.main 
+        className="min-h-screen bg-black text-white overflow-hidden"
+        initial={{ opacity: showIntro ? 0 : 1 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.5, delay: showIntro ? 0 : 0 }}
+      >
+        <Header isVisible={!showIntro} />
+        <HeroSection isIntroComplete={!showIntro} />
+        <ServicesSection />
+        {/* <StatsSection /> */}
+        <WorkSection />
+        <HowWeWorkSection />
+        {/* <TestimonialsSection /> */}
+        <FAQSection />
+        {/* <BlogPreview /> */}
+        <ContactSection />
+        <Footer />
+      </motion.main>
+    </>
   );
 }

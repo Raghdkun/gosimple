@@ -24,7 +24,7 @@ export default function WorkSection() {
       scrollTrigger: {
         trigger: sectionRef.current,
         pin: true,
-        scrub: 1,
+        scrub: 2,
         // Adjust duration based on number of slides to feel natural
         end: () => `+=${sectionRef.current!.offsetWidth * (totalSlides - 1)}`,
         invalidateOnRefresh: true,

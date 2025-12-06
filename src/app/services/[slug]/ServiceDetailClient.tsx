@@ -23,7 +23,7 @@ export default function ServiceDetailClient({ service }: { service: ServiceDetai
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.5 }}
-            onClick={() => router.push('/#services')}
+            onClick={() => router.push('/')}
             className="group flex items-center gap-2 text-zinc-400 hover:text-white transition-colors mb-8 md:mb-12"
           >
             <ArrowLeft className="w-5 h-5 group-hover:-translate-x-1 transition-transform" />

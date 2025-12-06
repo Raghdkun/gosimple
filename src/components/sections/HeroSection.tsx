@@ -5,23 +5,81 @@ import { motion } from 'framer-motion';
 import { useScrollAnimation, fadeInUpVariants, staggerContainerVariants } from '@/hooks/use-scroll-animation';
 import Orb from '@/components/Orb';
 import { useGSAP } from '@gsap/react';
-import { useRef } from 'react';
+import { useRef, useEffect, useState } from 'react';
 import gsap from "gsap";
 
+interface HeroSectionProps {
+  isIntroComplete?: boolean;
+}
 
-
-export default function HeroSection() {
+export default function HeroSection({ isIntroComplete = false }: HeroSectionProps) {
   const { ref, isInView } = useScrollAnimation({ threshold: 0.1 });
   const bgRef = useRef<HTMLDivElement>(null);
   const headingRef = useRef<HTMLHeadingElement>(null);
   const subheadingRef = useRef<HTMLParagraphElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
+  const sectionRef = useRef<HTMLElement>(null);
+  const [hasAnimated, setHasAnimated] = useState(false);
 
   gsap.registerPlugin(useGSAP);
 
+  // Set initial hidden state
+  useEffect(() => {
+    if (!isIntroComplete && !hasAnimated) {
+      gsap.set(containerRef.current, { opacity: 0, y: 80, scale: 0.9 });
+      gsap.set(headingRef.current, { opacity: 0, y: 50, scale: 0.95 });
+      gsap.set(subheadingRef.current, { opacity: 0, y: 40, filter: 'blur(8px)' });
+      gsap.set(bgRef.current, { opacity: 0, scale: 0.8 });
+    }
+  }, [isIntroComplete, hasAnimated]);
+
+  // Main animation triggered when intro completes
+  useEffect(() => {
+    if (isIntroComplete && !hasAnimated) {
+      setHasAnimated(true);
+      
+      const tl = gsap.timeline();
+
+      // Phase 1: Background orb scales in with glow
+      tl.to(bgRef.current, {
+        opacity: 1,
+        scale: 1,
+        duration: 1.2,
+        ease: "elastic.out(1, 0.5)"
+      });
+
+      // Phase 2: Container pops up with elastic effect
+      tl.to(containerRef.current, {
+        y: 0,
+        opacity: 1,
+        scale: 1,
+        duration: 0.8,
+        ease: "back.out(1.7)"
+      }, "-=0.8");
+
+      // Phase 3: Heading reveals with dramatic scale
+      tl.to(headingRef.current, {
+        y: 0,
+        opacity: 1,
+        scale: 1,
+        duration: 0.7,
+        ease: "power4.out"
+      }, "-=0.5");
+
+      // Phase 4: Subheading fades in with blur removal
+      tl.to(subheadingRef.current, {
+        y: 0,
+        opacity: 1,
+        filter: 'blur(0px)',
+        duration: 0.6,
+        ease: "power3.out"
+      }, "-=0.4");
+    }
+  }, [isIntroComplete, hasAnimated]);
+
+  // Continuous floating animation for background
   useGSAP(() => {
-    // Create a GSAP timeline for sequenced animations
-    const tl = gsap.timeline({ delay: 0.2 });
+    if (!bgRef.current) return;
     
     // Background animation - subtle floating effect
     gsap.to(bgRef.current, {
@@ -31,77 +89,11 @@ export default function HeroSection() {
       repeat: -1,
       yoyo: true,
     });
-    
-    // Background opacity fade-in
-    gsap.fromTo(bgRef.current, 
-      { opacity: 0, scale: 0.9 },
-      { 
-        opacity: 1, 
-        scale: 1,
-        duration: 1.5,
-        ease: "power2.out"
-      }
-    );
-
-    // Container animation - slide up with fade
-    tl.fromTo(containerRef.current,
-      { y: 60, opacity: 0 },
-      { 
-        y: 0, 
-        opacity: 1, 
-        duration: 1,
-        ease: "power3.out"
-      }
-    );
-
-    // Heading animation - slide up with stagger
-    tl.fromTo(headingRef.current,
-      { y: 40, opacity: 0, scale: 0.95 },
-      { 
-        y: 0, 
-        opacity: 1, 
-        scale: 1,
-        duration: 1.2,
-        ease: "power3.out"
-      },
-      "-=0.6" // Start 0.6s before previous animation ends
-    );
-
-    // Subheading animation - slide up with blur effect
-    tl.fromTo(subheadingRef.current,
-      { y: 30, opacity: 0, filter: "blur(4px)" },
-      { 
-        y: 0, 
-        opacity: 1, 
-        filter: "blur(0px)",
-        duration: 1,
-        ease: "power3.out"
-      },
-      "-=0.8" // Start 0.8s before previous animation ends
-    );
-
-    // Subtle parallax effect on scroll
-    // const handleScroll = () => {
-    //   const scrollY = window.scrollY;
-    //   const parallaxSpeed = 0.5;
-      
-    //   gsap.to(bgRef.current, {
-    //     y: scrollY * parallaxSpeed,
-    //     duration: 0.5,
-    //     ease: "power2.out"
-    //   });
-    // };
-
-    // window.addEventListener('scroll', handleScroll);
-    
-    return () => {
-      // window.removeEventListener('scroll', handleScroll);
-    };
   }, []);
 
 
   return (
-    <section ref={ref} className="relative pt-24 md:pt-36 lg:pt-44 pb-16 md:pb-24 lg:pb-32 px-4 sm:px-6 md:px-8 lg:px-16 xl:px-32 bg-black text-white overflow-hidden flex items-center justify-center min-h-[80vh]">
+    <section ref={sectionRef} className="relative pt-24 md:pt-36 lg:pt-44 pb-16 md:pb-24 lg:pb-32 px-4 sm:px-6 md:px-8 lg:px-16 xl:px-32 bg-black text-white overflow-hidden flex items-center justify-center min-h-[80vh]">
       <div
         ref={containerRef}
         className="max-w-7xl mx-auto text-center space-y-8 md:space-y-10 lg:space-y-12 flex flex-col items-center"
